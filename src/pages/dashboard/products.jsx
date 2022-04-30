@@ -3,6 +3,7 @@ import useFetch from '@hooks/useFetch';
 import endPoints from '@services/api';
 import Paginate from '@components/Paginate';
 import Modal from '@common/Modal';
+import FormProduct from '@components/FormProduct';
 import { PlusIcon } from '@heroicons/react/solid';
 
 export default function Products() {
@@ -99,7 +100,7 @@ export default function Products() {
         </div>
       </div>
       <Modal open={open} setOpen={setOpen}>
-        <h1>Hola, mundo!</h1>
+        <FormProduct />
       </Modal>
     </>
   );

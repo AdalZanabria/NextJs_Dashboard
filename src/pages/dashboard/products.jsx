@@ -1,20 +1,32 @@
-import { useState } from 'react';
-import useFetch from '@hooks/useFetch';
+import { useState, useEffect } from 'react';
 import endPoints from '@services/api';
-import Paginate from '@components/Paginate';
 import Modal from '@common/Modal';
 import FormProduct from '@components/FormProduct';
+import useAlert from '@hooks/useAlert';
+import Alert from '@common/alert';
 import { PlusIcon } from '@heroicons/react/solid';
+import axios from 'axios';
 
 export default function Products() {
   const [open, setOpen] = useState(false);
-  const totalProducts = useFetch(endPoints.products.getAll(0, 0)).length;
-  const PRODUCT_LIMIT = 5;
-  const [offsetProducts, setOffsetProducts] = useState(0);
-  //const [products, setProducts] = useState([]);
-  const products = useFetch(endPoints.products.getAll(PRODUCT_LIMIT, offsetProducts), offsetProducts);
+  const [products, setProducts] = useState([]);
+  const { alert, setAlert, toggleAlert } = useAlert();
+
+  useEffect(() => {
+    async function getProducts() {
+      const response = await axios.get(endPoints.products.allProducts);
+      setProducts(response.data);
+    }
+    try {
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [alert]);
+
   return (
     <>
+      <Alert alert={alert} handleClose={toggleAlert} />
       <div className="lg:flex lg:items-center lg:justify-between mb-8">
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">List of Products</h2>
@@ -34,7 +46,6 @@ export default function Products() {
       </div>
 
       <div className="flex flex-col">
-        {totalProducts > 0 && <Paginate totalItems={totalProducts} itemsPerPage={PRODUCT_LIMIT} setOffset={setOffsetProducts} neighbours={3}></Paginate>}
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -100,7 +111,7 @@ export default function Products() {
         </div>
       </div>
       <Modal open={open} setOpen={setOpen}>
-        <FormProduct />
+        <FormProduct setOpen={setOpen} setAlert={setAlert} />
       </Modal>
     </>
   );

@@ -1,5 +1,5 @@
 import FormProduct from '@components/FormProduct';
-import react, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import endPoints from '@services/api';
